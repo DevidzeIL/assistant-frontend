@@ -22,18 +22,18 @@ const Chat: React.FC = () => {
   }, [chatHistory]);
 
   const formatJsonFromString = (inputString: string) => {
-    const jsonPattern = /```json([\s\S]*?)```/; // Регулярное выражение для извлечения текста между ```json и ```
+    const jsonPattern = /```json([\s\S]*?)```/;
     const match = inputString.match(jsonPattern);
     if (match && match[1]) {
       try {
-        const json = JSON.parse(match[1]); // Преобразуем строку в JSON
-        return JSON.stringify(json, null, 2); // Форматируем JSON с отступом в 2 пробела
+        const json = JSON.parse(match[1]);
+        return JSON.stringify(json, null, 2);
       } catch (error) {
         console.error("Failed to parse JSON:", error);
-        return inputString; // Возвращаем исходный текст, если JSON не найден
+        return inputString;
       }
     }
-    return inputString; // Возвращаем исходный текст, если JSON не найден
+    return inputString;
   };
 
   const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +64,7 @@ const Chat: React.FC = () => {
       setChatHistory((prev) => [...prev, { type: "user", message: message }]);
       try {
         const response = await axios.post(
-          "http://localhost:5000/ask",
+          "http://81.94.159.202:5000/ask",
           formData,
           {
             timeout: 100000,
