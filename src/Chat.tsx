@@ -54,39 +54,61 @@ const Chat: React.FC = () => {
     }
     if (file) {
       formData.append("image", file);
-      formData.append("filename", file.name); // Добавляем название файла
+      formData.append("document", file); // Changed from "image" to "document" if that's what the backend expects
+      formData.append("filename", file.name);
+
+      formData.append("filename", file.name); // Adding filename just for reference
+    } else {
+      console.error("No file selected.");
+      setIsLoading(false);
+      return; // Prevent form submission if no file is selected
     }
+
     setQuestion("");
     setFile(null);
 
-    if (formData.has("question") || formData.has("image")) {
-      const message = question || (file ? file.name : "");
-      setChatHistory((prev) => [...prev, { type: "user", message: message }]);
-      try {
-        const response = await axios.post(
-          "http://81.94.159.202:5000/ask",
-          formData,
-          {
-            timeout: 100000,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        const formattedResponse = formatJsonFromString(response.data.response);
-        setChatHistory((prev) => [
-          ...prev,
-          { type: "ai", message: formattedResponse },
-        ]);
-      } catch (error) {
-        console.error("Error fetching response:", error);
-        setChatHistory((prev) => [
-          ...prev,
-          { type: "ai", message: "Failed to fetch response." },
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
+    const message = question || (file ? file.name : "");
+    setChatHistory((prev) => [...prev, { type: "user", message: message }]);
+
+    try {
+      const [askResponse, imageDataResponse] = await Promise.all([
+        axios.post("http://81.94.159.202:5000/ask", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 100000,
+        }),
+        axios.post("http://81.94.159.202/get_image_data/", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 100000,
+        }),
+      ]);
+
+      const askFormatted = formatJsonFromString(askResponse.data.response);
+      const imageDataFormatted = JSON.stringify(
+        imageDataResponse.data.data.predictions[0],
+        null,
+        2
+      );
+      const imageVoteDataFormatted = JSON.stringify(
+        imageDataResponse.data.results,
+        null,
+        2
+      );
+
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          type: "ai",
+          message: `Heavy KB Model:\n${askFormatted}\n\nLight KB Model:\n${imageDataFormatted}\n"results": ${imageVoteDataFormatted}`,
+        },
+      ]);
+    } catch (error) {
+      console.error("Error fetching responses:", error);
+      setChatHistory((prev) => [
+        ...prev,
+        { type: "ai", message: "Failed to fetch responses." },
+      ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,8 +117,6 @@ const Chat: React.FC = () => {
       <div
         className="chat-history"
         style={{
-          maxHeight: "300px",
-          width: "100%",
           overflowY: "auto",
           marginTop: "10px",
         }}
@@ -131,12 +151,12 @@ const Chat: React.FC = () => {
       </div>
       {isLoading && <div>Loading...</div>}
       <form onSubmit={handleSubmit} className="chat-form">
-        <input
+        {/* <input
           type="text"
           value={question}
           onChange={handleQuestionChange}
           placeholder="Ask a question..."
-        />
+        /> */}
         <input
           type="file"
           onChange={handleFileChange}

@@ -43,8 +43,7 @@
 }
 
 .chat-history {
-  width: 100%;
-  max-width: 600px;
+  width: 95vw;
   margin-top: 20px;
 }
 

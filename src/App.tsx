@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>OpenAI GPT Assistant</p>
+        <p>Image Analyzer</p>
         <Chat />
       </header>
     </div>
