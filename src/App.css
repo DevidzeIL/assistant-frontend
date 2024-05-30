@@ -1,0 +1,82 @@
+.App {
+  text-align: center;
+  background-color: #212121;
+  display: flex;
+  justify-content: center;
+}
+
+.App-header {
+  height: 100vh;
+  width: 50vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.message {
+  display: "inline-block";
+  max-width: "80%";
+  padding: "5px";
+  border-radius: "5px";
+  font-size: "16px";
+  margin: "5px";
+}
+
+.pre-json {
+  background-color: #212121;
+  border: 1px solid #212121;
+  padding: 10px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 90vh;
+  justify-content: center;
+}
+
+.chat-history {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.chat-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.chat-form input[type="text"],
+.chat-form input[type="file"] {
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 100%;
+}
+
+.chat-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.chat-form button:hover {
+  background-color: #0056b3;
+}
+
+.pre-json {
+  background-color: #282c34;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
